@@ -1,11 +1,8 @@
 <template>
   <h4>{{ title }}</h4>
   <div id="main-app" class="container">
-    <button class="btn btn-sm btn-primary">
-      <FontAwesomeIcon icon="plus" class="mr-2" /></button
-    >Add Appointment
-
     <div class="row justify-content-center">
+      <AddAppointment @add="addItem" />
       <AppointmentList
         :appointments="appointments"
         @delete="deleteItem"
@@ -18,8 +15,8 @@
 <script lang="ts">
 import axios from "axios";
 import AppointmentList from "./components/AppointmentList.vue";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import _ from "lodash";
+import AddAppointment from "./components/AddAppointment.vue";
 export default {
   name: "MainApp",
   data() {
@@ -31,7 +28,7 @@ export default {
   },
   components: {
     AppointmentList,
-    FontAwesomeIcon,
+    AddAppointment,
   },
   mounted() {
     axios
@@ -48,12 +45,6 @@ export default {
   },
   methods: {
     deleteItem: function (appointment: any) {
-      // this.appointments = this.appointments.filter((item) => {
-      //   if (item.petName == appointment.petName) {
-      //     return false;
-      //   }
-      //   return true;
-      // });
       this.appointments = _.without(this.appointments, appointment);
     },
     editItem: function (id: Number, field: String, text: String) {
@@ -61,6 +52,11 @@ export default {
         aptId: id,
       });
       this.appointments[aptIndex][field] = text;
+    },
+    addItem: function (newApt: any) {
+      newApt.aptId = this.aptIndex;
+      this.aptIndex++;
+      this.appointments.push(newApt);
     },
   },
 };
