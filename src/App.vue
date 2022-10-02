@@ -6,7 +6,11 @@
     >Add Appointment
 
     <div class="row justify-content-center">
-      <AppointmentList :appointments="appointments" @delete="deleteItem" />
+      <AppointmentList
+        :appointments="appointments"
+        @delete="deleteItem"
+        @edit="editItem"
+      />
     </div>
   </div>
 </template>
@@ -18,10 +22,11 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import _ from "lodash";
 export default {
   name: "MainApp",
-  data: function () {
+  data() {
     return {
       title: "Appointment List",
       appointments: [],
+      aptIndex: 0,
     };
   },
   components: {
@@ -31,7 +36,14 @@ export default {
   mounted() {
     axios
       .get("./data/appointments.json")
-      .then((response) => (this.appointments = response.data))
+      .then(
+        (response) =>
+          (this.appointments = response.data.map((item) => {
+            item.aptId = this.aptIndex;
+            this.aptIndex++;
+            return item;
+          }))
+      )
       .catch((error) => console.log(error));
   },
   methods: {
@@ -43,6 +55,12 @@ export default {
       //   return true;
       // });
       this.appointments = _.without(this.appointments, appointment);
+    },
+    editItem: function (id: Number, field: String, text: String) {
+      const aptIndex = _.findIndex(this.appointments, {
+        aptId: id,
+      });
+      this.appointments[aptIndex][field] = text;
     },
   },
 };

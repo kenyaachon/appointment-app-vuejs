@@ -3,8 +3,8 @@
     <div class="list-group list-group-flush">
       <div
         class="list-group-item"
-        v-for="(appointment, index) in appointments"
-        :key="index"
+        v-for="appointment in appointments"
+        :key="appointment.aptId"
       >
         <button
           class="mr-2 btn btn-sm btn-danger"
@@ -14,16 +14,51 @@
         </button>
         <div class="w-100">
           <div class="d-flex justify-content-between">
-            <span class="h4 text-primary">{{ appointment.petName }}</span>
+            <span
+              class="h4 text-primary"
+              contenteditable="true"
+              @blur="
+                $emit(
+                  'edit',
+                  appointment.aptId,
+                  'petName',
+                  $event.target.innerText
+                )
+              "
+              >{{ appointment.petName }}</span
+            >
             <span class="float-right">{{
               formattedDate(appointment.aptDate)
             }}</span>
           </div>
           <div class="owner-name">
             <span class="font-weight-bold text-primary mr-1">Owner:</span>
-            <span>{{ appointment.petOwner }}</span>
+            <span
+              contenteditable="true"
+              @blur="
+                $emit(
+                  'edit',
+                  appointment.aptId,
+                  'petOwner',
+                  $event.target.innerText
+                )
+              "
+              >{{ appointment.petOwner }}</span
+            >
           </div>
-          <div>{{ appointment.aptNotes }}</div>
+          <div
+            contenteditable="true"
+            @blur="
+              $emit(
+                'edit',
+                appointment.aptId,
+                'aptNotes',
+                $event.target.innerText
+              )
+            "
+          >
+            {{ appointment.aptNotes }}
+          </div>
         </div>
       </div>
     </div>
